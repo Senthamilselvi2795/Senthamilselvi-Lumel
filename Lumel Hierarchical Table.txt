@@ -1,0 +1,118 @@
+import React, { useState } from "react";
+
+const initialData = [
+  {
+    id: "electronics",
+    label: "Electronics",
+    children: [
+      { id: "phones", label: "Phones", value: 800 },
+      { id: "laptops", label: "Laptops", value: 700 }
+    ]
+  },
+  {
+    id: "furniture",
+    label: "Furniture",
+    children: [
+      { id: "tables", label: "Tables", value: 300 },
+      { id: "chairs", label: "Chairs", value: 700 }
+    ]
+  }
+];
+
+function App() {
+  const [data, setData] = useState(initialData);
+  const [inputs, setInputs] = useState({});
+
+  // Calculate parent totals dynamically - used reduce function
+  const calculateParentValue = (children) => {
+    return children.reduce((sum, child) => sum + child.value, 0);
+  };
+
+  // Handle input change
+  const handleInputChange = (id, value) => {
+    setInputs({ ...inputs, [id]: Number(value) });
+  };
+
+  // Update value directly
+  const updateValue = (parentIndex, childIndex = null) => {
+    const updatedData = [...data];
+
+    if (childIndex !== null) {
+      const child = updatedData[parentIndex].children[childIndex];
+      child.value = inputs[child.id] || child.value;
+    }
+
+    setData(updatedData);
+  };
+
+  // Update by percentage calculation
+  const updatePercentage = (parentIndex, childIndex = null) => {
+    const updatedData = [...data];
+
+    if (childIndex !== null) {
+      const child = updatedData[parentIndex].children[childIndex];
+      const percent = inputs[child.id] || 0;
+      child.value = child.value + (child.value * percent) / 100;
+    }
+
+    setData(updatedData);
+  };
+
+  return (
+    <div className="container">
+      <h2>Hierarchical Table</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Label</th>
+            <th>Value</th>
+            <th>Input</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {data.map((parent, pIndex) => (
+            <React.Fragment key={parent.id}>
+              {/* Parent Row */}
+              <tr className="parent-row">
+                <td>{parent.label}</td>
+                <td>{calculateParentValue(parent.children)}</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+
+              {/* Child Rows */}
+              {parent.children.map((child, cIndex) => (
+                <tr key={child.id}>
+                  <td className="child-label"> {child.label}</td>
+                  <td>{child.value}</td>
+                  <td>
+                    <input
+                      type="number"
+                      value={inputs[child.id] || ""}
+                      onChange={(e) =>
+                        handleInputChange(child.id, e.target.value)
+                      }
+                    />
+                  </td>
+                  <td>
+                    <button onClick={() => updateValue(pIndex, cIndex)}>
+                      Allocation Value
+                    </button>
+                    <button onClick={() => updatePercentage(pIndex, cIndex)}>
+                      Allocation %
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default App;
