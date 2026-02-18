@@ -91,6 +91,7 @@ function App() {
                   <td>
                     <input
                       type="number"
+                      placeholder="%"
                       value={inputs[child.id] || ""}
                       onChange={(e) =>
                         handleInputChange(child.id, e.target.value)
@@ -117,3 +118,4 @@ function App() {
 
 
 export default App;
+
