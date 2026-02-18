@@ -23,7 +23,7 @@ function App() {
   const [data, setData] = useState(initialData);
   const [inputs, setInputs] = useState({});
 
-  // Calculate parent totals dynamically - used reduce function
+  // Calculate parent totals dynamically 
   const calculateParentValue = (children) => {
     return children.reduce((sum, child) => sum + child.value, 0);
   };
@@ -79,8 +79,8 @@ function App() {
               <tr className="parent-row">
                 <td>{parent.label}</td>
                 <td>{calculateParentValue(parent.children)}</td>
-                <td>-</td>
-                <td>-</td>
+                <td></td>
+                <td></td>
               </tr>
 
               {/* Child Rows */}
@@ -114,5 +114,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
